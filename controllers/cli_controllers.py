@@ -1,6 +1,7 @@
 from flask import Blueprint
 from init import db, bcrypt
-from models import User, Playlist
+from models.user import User
+from models.playlist import Playlist
 
 db_commands = Blueprint("db", __name__)
 

@@ -11,6 +11,9 @@ class User(db.Model):
     
     playlists = db.relationship('Playlist', back_populates='user')
 
-class UserSchema(ma.SQLAlchemyAutoSchema):
+class UserSchema(ma.Schema):
+    playlists = fields.List(fields.Nested('PlaylistSchema', only=["id", "name"]))
+
     class Meta:
-        model = User
+        fields = ("id", "name", "email", "playlists")
+        ordered = True

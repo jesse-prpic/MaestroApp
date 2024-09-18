@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from init import db
-from models import Playlist, PlaylistSchema
+from models.playlist import Playlist, PlaylistSchema
 from sqlalchemy import select
 
 playlists_bp = Blueprint("playlists", __name__, url_prefix="/playlists")
