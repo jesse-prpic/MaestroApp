@@ -3,6 +3,7 @@ from flask import Flask
 
 from init import db, ma, bcrypt, jwt
 
+
 def create_app():
     app = Flask(__name__)
     app.json.sort_keys = False
@@ -16,6 +17,4 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)
