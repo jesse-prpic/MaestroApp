@@ -1,7 +1,11 @@
 from flask import Blueprint
 from init import db, bcrypt
 from models.user import User
+from models.artist import Artist
 from models.playlist import Playlist
+from models.song import Song
+from models.album import Album
+from models.genre import Genre
 
 db_commands = Blueprint("db", __name__)
 
@@ -27,6 +31,21 @@ def seed_tables():
     
     playlist = Playlist(name="My Favorite Songs", user_id=1)
     db.session.add(playlist)
+
+    artist = Artist(name="Artist One")
+    db.session.add(artist)
+
+    # Create a sample genre
+    genre = Genre(name="Rock")
+    db.session.add(genre)
+
+    # Create a sample album
+    album = Album(title="Greatest Hits")
+    db.session.add(album)
+
+    # Create a sample song
+    song = Song(title="Hit Song", artist=artist, genre=genre, album=album)
+    db.session.add(song)
     
     db.session.commit()
     print("Tables seeded!")
