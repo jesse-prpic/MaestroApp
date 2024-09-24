@@ -1,5 +1,4 @@
-from init import db, ma
-from marshmallow import fields
+from init import db
 
 class Album(db.Model):
     __tablename__ = "albums"
@@ -7,10 +6,3 @@ class Album(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
     songs = db.relationship('Song', back_populates='album')
-
-class AlbumSchema(ma.Schema):
-    songs = fields.List(fields.Nested('SongSchema', only=["id", "title"]))
-
-    class Meta:
-        fields = ("id", "title", "songs")
-        ordered = True

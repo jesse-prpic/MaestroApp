@@ -1,5 +1,4 @@
-from init import db, ma
-from marshmallow import fields
+from init import db
 
 class Song(db.Model):
     __tablename__ = "songs"
@@ -14,11 +13,3 @@ class Song(db.Model):
     genre = db.relationship('Genre', back_populates='songs')
     album = db.relationship('Album', back_populates='songs')
 
-class SongSchema(ma.Schema):
-    artist = fields.Nested('ArtistSchema', only=["id", "name"])
-    genre = fields.Nested('GenreSchema', only=["id", "name"])
-    album = fields.Nested('AlbumSchema', only=["id", "title"])
-
-    class Meta:
-        fields = ("id", "title", "artist", "genre", "album")
-        ordered = True

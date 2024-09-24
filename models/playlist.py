@@ -1,5 +1,4 @@
-from init import db, ma
-from marshmallow import fields
+from init import db
 
 class Playlist(db.Model):
     __tablename__ = "playlists"
@@ -9,10 +8,3 @@ class Playlist(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     user = db.relationship('User', back_populates='playlists')
-
-class PlaylistSchema(ma.Schema):
-    user = fields.Nested('UserSchema', only=["id", "name"])
-
-    class Meta:
-        fields = ("id", "name", "user")
-        ordered = True

@@ -1,5 +1,4 @@
-from init import db, ma
-from marshmallow import fields
+from init import db
 
 class User(db.Model):
     __tablename__ = "users"
@@ -10,10 +9,3 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     
     playlists = db.relationship('Playlist', back_populates='user')
-
-class UserSchema(ma.Schema):
-    playlists = fields.List(fields.Nested('PlaylistSchema', only=["id", "name"]))
-
-    class Meta:
-        fields = ("id", "name", "email", "playlists")
-        ordered = True
