@@ -22,30 +22,49 @@ def drop_tables():
 @db_commands.cli.command("seed")
 def seed_tables():
     # Create a sample user and playlist
-    user = User(
-        name="Admin",
-        email="admin@example.com",
-        password=bcrypt.generate_password_hash("password").decode("utf-8"),
-    )
-    db.session.add(user)
+    user_attribute = [
+        User(name="Jesse", email="jesse@admin.com", password=bcrypt.generate_password_hash("password").decode("utf-8"), is_admin=True),
+        User(name="Alice", email="alice@admin.com", password=bcrypt.generate_password_hash("password").decode("utf-8"), is_admin=True),
+    ]
+    db.session.add_all(user_attribute)
     
-    playlist = Playlist(name="My Favorite Songs", user_id=1)
-    db.session.add(playlist)
+    playlist_attibute = [
+        Playlist(name="My Favorite Songs", user_id=1),
+        Playlist(name="Chill Vibes", user_id=2),
+    ]
+    db.session.add_all(playlist_attibute)
 
-    artist = Artist(name="Artist One")
-    db.session.add(artist)
+    # Create sample artists
+    artist_attribute = [
+        Artist(name="Artist One"),
+        Artist(name="Artist Two"),
+    ]
+    db.session.add_all(artist_attribute)
 
-    # Create a sample genre
-    genre = Genre(name="Rock")
-    db.session.add(genre)
+    # Create sample genres
+    genre_attribute = [
+        Genre(name="Rock"),
+        Genre(name="Pop"),
+        Genre(name="Hip Hop"),
+        Genre(name="Alternative"),
+        Genre(name="Country"),
+        Genre(name="Classical"),
+    ]
+    db.session.add_all(genre_attribute)
 
-    # Create a sample album
-    album = Album(title="Greatest Hits")
-    db.session.add(album)
+    # Create sample albums
+    album_attribute = [
+        Album(title="Greatest Hits"),
+        Album(title="Chill Album"),
+    ]
+    db.session.add_all(album_attribute)
 
-    # Create a sample song
-    song = Song(title="Hit Song", artist=artist, genre=genre, album=album)
-    db.session.add(song)
-    
+    # Create sample songs
+    song_attribute = [
+        Song(title="Hit Song", artist=artist_attribute[0], genre=genre_attribute[0], album=album_attribute[0]),
+        Song(title="Chill Tune", artist=artist_attribute[1], genre=genre_attribute[1], album=album_attribute[1]),
+    ]
+    db.session.add_all(song_attribute)
+
     db.session.commit()
     print("Tables seeded!")
