@@ -7,6 +7,7 @@ from models.song import Song
 from models.album import Album
 from models.genre import Genre
 
+# Create a blueprint for database CLI commands
 db_commands = Blueprint("db", __name__)
 
 @db_commands.cli.command("create")
@@ -21,13 +22,14 @@ def drop_tables():
 
 @db_commands.cli.command("seed")
 def seed_tables():
-    # Create a sample user and playlist
+    # Create sample users
     user_attribute = [
         User(name="Jesse", email="jesse@admin.com", password=bcrypt.generate_password_hash("password").decode("utf-8"), is_admin=True),
         User(name="Alice", email="alice@admin.com", password=bcrypt.generate_password_hash("password").decode("utf-8"), is_admin=True),
     ]
     db.session.add_all(user_attribute)
     
+    # Create sample playlist
     playlist_attibute = [
         Playlist(name="My Favorite Songs", user_id=1),
         Playlist(name="Chill Vibes", user_id=2),
@@ -66,5 +68,6 @@ def seed_tables():
     ]
     db.session.add_all(song_attribute)
 
+    # Commit all changes to the database
     db.session.commit()
     print("Tables seeded!")
