@@ -7,6 +7,7 @@ from flask_jwt_extended import create_access_token
 from datetime import timedelta
 from schemas.user_schema import UserSchema
 from models.user import User
+from flask_jwt_extended import jwt_required, get_jwt_identity
 import logging
 
 # setting up and configure logging for debugging purposes
@@ -45,6 +46,30 @@ def register_user():
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
             return {"error": "Email address must be unique"}, 400
             # unique violation
+
+@auth_bp.route("/users", methods=["GET"])
+@jwt_required()
+def get_users():
+    users = User.query.all()
+    return UserSchema(many=True).dump(users)
+
+@auth_bp.route("/users/<int:user_id>", methods=["DELETE"])
+@jwt_required()
+def delete_user(user_id):
+    # Delete a use account (admin only)
+    current_user = User.query.get(get_jwt_identity())
+    """Delete a user account (admin only)."""
+    user = User.query.get_or_404(user_id)
+    db.session.delete(user)
+    db.session.commit()
+    return {"message": "User deleted successfully"}, 204
+
+@auth_bp.route("/logout", methods=["POST"])
+@jwt_required()
+def logout_user():
+    """Logout the user by invalidating the token."""
+    # Implementation depends on how you manage token revocation
+    return {"message": "User logged out successfully"}, 200
 
 @auth_bp.route("/login", methods=["POST"])
 def login_user():

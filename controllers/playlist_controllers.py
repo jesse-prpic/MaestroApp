@@ -15,7 +15,7 @@ def get_all_playlists():
     user_id = get_jwt_identity()
     stmt = select(Playlist).filter_by(user_id=user_id)
     playlists = db.session.scalars(stmt).all()
-    return PlaylistSchema(many=True).dump(playlists)
+    return PlaylistSchema(many=True).dump(playlists), 200
 
 @playlists_bp.route("/", methods=["POST"])
 @jwt_required()

@@ -3,6 +3,10 @@ from flask import Flask
 from controllers.auth_controllers import auth_bp
 from controllers.cli_controllers import db_commands
 from controllers.playlist_controllers import playlists_bp
+from controllers.artist_controllers import artists_bp
+from controllers.album_controllers import albums_bp
+from controllers.song_controllers import songs_bp
+from controllers.genre_controllers import genres_bp
 
 from init import db, ma, bcrypt, jwt
 
@@ -25,6 +29,10 @@ def create_app():
     app.register_blueprint(auth_bp) #Authentication routes
     app.register_blueprint(db_commands) # CLI commands for DB management
     app.register_blueprint(playlists_bp) # PLaylist-related routes
+    app.register_blueprint(artists_bp) #artist- related routes
+    app.register_blueprint(albums_bp) #album-related routes
+    app.register_blueprint(songs_bp) #song-related routes
+    app.register_blueprint(genres_bp) #genre-related routes
 
     return app
 

@@ -25,21 +25,21 @@ def seed_tables():
     # Create sample users
     user_attribute = [
         User(name="Jesse", email="jesse@admin.com", password=bcrypt.generate_password_hash("password").decode("utf-8"), is_admin=True),
-        User(name="Alice", email="alice@admin.com", password=bcrypt.generate_password_hash("password").decode("utf-8"), is_admin=True),
+        User(name="Alice", email="alice@admin.com", password=bcrypt.generate_password_hash("password").decode("utf-8"), is_admin=False),
     ]
     db.session.add_all(user_attribute)
     
     # Create sample playlist
     playlist_attibute = [
-        Playlist(name="My Favorite Songs", user_id=1),
-        Playlist(name="Chill Vibes", user_id=2),
+        Playlist(name="Jesse's Playlist", user_id=1),
+        Playlist(name="Alice's Playlist", user_id=2),
     ]
     db.session.add_all(playlist_attibute)
 
     # Create sample artists
     artist_attribute = [
-        Artist(name="Artist One"),
-        Artist(name="Artist Two"),
+        Artist(name="Taylor Swift"),
+        Artist(name="Hilary Duff"),
     ]
     db.session.add_all(artist_attribute)
 
