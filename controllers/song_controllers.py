@@ -39,12 +39,6 @@ def get_all_songs():
     songs = Song.query.all()
     return SongSchema(many=True).dump(songs)
 
-@songs_bp.route("/<int:song_id>", methods=["GET"])
-def get_song(song_id):
-    """Get a specific song."""
-    song = Song.query.get_or_404(song_id)
-    return SongSchema().dump(song)
-
 @songs_bp.route("/<int:song_id>", methods=["DELETE"])
 @jwt_required()
 # Delete a playlist by its ID
