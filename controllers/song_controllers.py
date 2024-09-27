@@ -2,6 +2,9 @@ from flask import Blueprint, request
 from init import db
 from models.song import Song
 from models.genre import Genre
+from flask_jwt_extended import jwt_required
+from schemas.song_schema import SongSchema
+from sqlalchemy import select
 from schemas.song_schema import SongSchema
 
 songs_bp = Blueprint("songs", __name__, url_prefix="/songs")
@@ -41,3 +44,17 @@ def get_song(song_id):
     """Get a specific song."""
     song = Song.query.get_or_404(song_id)
     return SongSchema().dump(song)
+
+@songs_bp.route("/<int:song_id>", methods=["DELETE"])
+@jwt_required()
+# Delete a playlist by its ID
+def delete_song(song_id):
+    stmt = select(Song).filter_by(id=song_id)
+    song = db.session.scalar(stmt)
+    
+    if song:
+        db.session.delete(song) # Delete the playlist from the session
+        db.session.commit() #Commit to the database
+        return {"message": f"Song {song.title} deleted successfully!"}
+    
+    return {"error": "Song not found"}, 404 # Handle where playlist is not found

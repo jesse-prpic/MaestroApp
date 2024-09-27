@@ -3,6 +3,8 @@ from init import db
 from models.genre import Genre
 from schemas.genre_schema import GenreSchema
 from flask_jwt_extended import jwt_required
+from sqlalchemy import select
+from schemas.genre_schema import GenreSchema
 
 genres_bp = Blueprint("genres", __name__, url_prefix="/genres")
 
@@ -28,12 +30,16 @@ def get_genre(genre_id):
     genre = Genre.query.get_or_404(genre_id)
     return GenreSchema().dump(genre)
 
-
 @genres_bp.route("/<int:genre_id>", methods=["DELETE"])
 @jwt_required()
+# Delete a genre by its ID
 def delete_genre(genre_id):
-    """Delete a specific genre."""
-    genre = Genre.query.get_or_404(genre_id)
-    db.session.delete(genre)
-    db.session.commit()
-    return {"message": f"Genre '{genre.name}' deleted successfully!"}, 204
+    stmt = select(Genre).filter_by(id=genre_id)
+    genre = db.session.scalar(stmt)
+    
+    if genre:
+        db.session.delete(genre) # Delete the genre from the session
+        db.session.commit() #Commit to the database
+        return {"message": f"Genre {genre.name} deleted successfully!"}
+    
+    return {"error": "Genre not found"}, 404 # Handle where genre is not found

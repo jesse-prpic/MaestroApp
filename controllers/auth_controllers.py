@@ -13,8 +13,6 @@ import logging
 # setting up and configure logging for debugging purposes
 logging.basicConfig(level=logging.DEBUG)
 
-# from flask_jwt_extended import jwt_required, create_refresh_token
-
 # creating a Blueprint for authentication-related routes
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -87,10 +85,3 @@ def login_user():
     else:
         # Invalid response due to credentials
         return {"error": "Invalid email or password"}, 400
-    
-# @auth_bp.route("/token/refresh", methods=["POST"])
-# @jwt_required(refresh=True)
-# def refresh_token():
-#     current_user = get_jwt_identity()
-#     new_token = create_access_token(identity=current_user)
-#     return {"access_token": new_token}, 200

@@ -3,6 +3,8 @@ from init import db
 from models.artist import Artist
 from schemas.artist_schema import ArtistSchema
 from flask_jwt_extended import jwt_required
+from sqlalchemy import select
+
 
 artists_bp = Blueprint("artists", __name__, url_prefix="/artists")
 
@@ -29,10 +31,14 @@ def get_artist(artist_id):
 
 @artists_bp.route("/<int:artist_id>", methods=["DELETE"])
 @jwt_required()
+# Delete a playlist by its ID
 def delete_artist(artist_id):
-    artist = Artist.query.get(artist_id)
+    stmt = select(Artist).filter_by(id=artist_id)
+    artist = db.session.scalar(stmt)
+    
     if artist:
-        db.session.delete(artist)
-        db.session.commit()
+        db.session.delete(artist) # Delete the artist from the session
+        db.session.commit() #Commit to the database
         return {"message": f"Artist {artist.name} deleted successfully!"}
-    return {"error": "Artist not found"}, 404
+    
+    return {"error": "Artist not found"}, 404 # Handle where artist is not found
