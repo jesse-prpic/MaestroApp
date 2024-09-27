@@ -56,15 +56,15 @@ def seed_tables():
 
     # Create sample albums
     album_attribute = [
-        Album(title="Greatest Hits"),
-        Album(title="Chill Album"),
+        Album(title="Reputation (Taylors Version)"),
+        Album(title="Metamorphosis"),
     ]
     db.session.add_all(album_attribute)
 
     # Create sample songs
     song_attribute = [
-        Song(title="Hit Song", artist=artist_attribute[0], genre=genre_attribute[0], album=album_attribute[0]),
-        Song(title="Chill Tune", artist=artist_attribute[1], genre=genre_attribute[1], album=album_attribute[1]),
+        Song(title="Don't Blame Me", artist_id=1, genre_id=1, album_id=1),
+        Song(title="Who's That Girl", artist_id=2, genre_id=2, album_id=2),
     ]
     db.session.add_all(song_attribute)
 

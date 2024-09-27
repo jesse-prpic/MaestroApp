@@ -5,5 +5,5 @@ class Artist(db.Model):
     __tablename__ = "artists"
 
     id = db.Column(db.Integer, primary_key=True) #Primary Key
-    name = db.Column(db.String, nullable=False) #Song name
-    songs = db.relationship('Song', back_populates='artist') #Relationship with song
+    name = db.Column(db.String(255), unique=True, nullable=False) #Song name
+    songs = db.relationship('Song', back_populates='artist', cascade="all") #Relationship with Playlist and cascade options

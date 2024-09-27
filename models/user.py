@@ -9,4 +9,4 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False) #Hashed password
     is_admin = db.Column(db.Boolean, default=False) # if user is admin
     
-    playlists = db.relationship('Playlist', back_populates='user') #Relationship with Playlist
+    playlists = db.relationship('Playlist', back_populates='user', cascade="all") #Relationship with Playlist and cascade options

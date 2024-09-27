@@ -4,5 +4,5 @@ class Album(db.Model):
     __tablename__ = "albums"
 
     id = db.Column(db.Integer, primary_key=True) # Primary Key
-    title = db.Column(db.String, nullable=False) # Album Title
-    songs = db.relationship('Song', back_populates='album') #Relationship with Song
+    title = db.Column(db.String(255), unique=True, nullable=False) # Album Title
+    songs = db.relationship('Song', back_populates='album', cascade="all") #Relationship with Playlist and cascade options

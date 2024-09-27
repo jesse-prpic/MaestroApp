@@ -3,8 +3,26 @@
 ## R1
 Explain the problem that this app will solve, and explain how this app solves or addresses the problem.
 
+Problem: With the fast pace digital age, it can be difficult to keep track of your music collection with multiple scattered playlists. This app addresses the need for an organised music management system where users can manage their music collections. 
+It allows users to create playlists, manage songs, and track various music-related entities like artists, albums and genres.
+
+Solution: The app provides a centralized platform where users can:
+
+Create Playlists: 
+Users can easily create and manage multiple playlists.
+
+Organize Music: 
+By associating songs with artists, albums, and genres, users can explore their music collections in an organized manner.
+
+User Authentication: 
+Users can register, log in, and maintain their personal collections securely using JWT (JSON Web Tokens) for authentication.
+
+CRUD Operations: 
+The API allows users to perform CRUD operations on songs, playlists, artists, albums, and genres through a clear and consistent interface.
+
 ## R2
 Describe the way tasks are allocated and tracked in your project.
+
 
 ## R3
 List and explain the third-party services, packages and dependencies used in this app.
