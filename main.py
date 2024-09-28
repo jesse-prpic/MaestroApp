@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, jsonify
 from controllers.auth_controllers import auth_bp
 from controllers.cli_controllers import db_commands
 from controllers.playlist_controllers import playlists_bp
@@ -7,6 +7,8 @@ from controllers.artist_controllers import artists_bp
 from controllers.album_controllers import albums_bp
 from controllers.song_controllers import songs_bp
 from controllers.genre_controllers import genres_bp
+from werkzeug.exceptions import BadRequest  # Import for raising BadRequest
+
 
 from init import db, ma, bcrypt, jwt
 
@@ -33,6 +35,19 @@ def create_app():
     app.register_blueprint(albums_bp) #album-related routes
     app.register_blueprint(songs_bp) #song-related routes
     app.register_blueprint(genres_bp) #genre-related routes
+
+# Error handling for HTTP errors
+    @app.errorhandler(400)
+    def bad_request(error):
+        return jsonify({"error": "Bad request", "message": str(error)}), 400
+
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({"error": "Not found", "message": str(error)}), 404
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        return jsonify({"error": "Internal server error", "message": "Something went wrong"}), 500
 
     return app
 

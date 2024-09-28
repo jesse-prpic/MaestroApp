@@ -1,43 +1,65 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from init import db
 from models.album import Album
 from schemas.album_schema import AlbumSchema
 from flask_jwt_extended import jwt_required
 from sqlalchemy import select
+from utility_functions import auth_as_admin
+import logging
 
 albums_bp = Blueprint("albums", __name__, url_prefix="/albums")
 
 @albums_bp.route("/", methods=["POST"])
 def create_album():
     """Create a new album."""
-    body_data = request.get_json()
-    album = Album(title=body_data.get("title"))
-    db.session.add(album)
-    db.session.commit()
-    return AlbumSchema().dump(album), 201
+    try:
+        body_data = request.get_json()
+        if not body_data or not body_data.get("title"):
+            return {"error": "Title is required"}, 400
+        
+        album = Album(title=body_data["title"])
+        db.session.add(album)
+        db.session.commit()
+        return AlbumSchema().dump(album), 201
+    except Exception as e:
+        logging.error(f"Error in create_album: {str(e)}")
+        return jsonify({"error": "Failed to create album."}), 500
 
 @albums_bp.route("/", methods=["GET"])
 def get_all_albums():
     """Get all albums."""
-    albums = Album.query.all()
-    return AlbumSchema(many=True).dump(albums)
+    try:
+        albums = Album.query.all()
+        return AlbumSchema(many=True).dump(albums), 200
+    except Exception as e:
+        logging.error(f"Error in get_all_albums: {str(e)}")
+        return jsonify({"error": "Failed to fetch albums."}), 500
 
 @albums_bp.route("/<int:album_id>", methods=["GET"])
 def get_album(album_id):
     """Get a specific album."""
-    album = Album.query.get_or_404(album_id)
-    return AlbumSchema().dump(album)
+    try:
+        album = Album.query.get_or_404(album_id)
+        return AlbumSchema().dump(album), 200
+    except Exception as e:
+        logging.error(f"Error in get_album: {str(e)}")
+        return jsonify({"error": "Failed to fetch album."}), 500
 
 @albums_bp.route("/<int:album_id>", methods=["DELETE"])
+@auth_as_admin
 @jwt_required()
-# Delete a album by its ID
 def delete_album(album_id):
-    stmt = select(Album).filter_by(id=album_id)
-    album = db.session.scalar(stmt)
-    
-    if album:
-        db.session.delete(album) # Delete the album from the session
-        db.session.commit() #Commit to the database
-        return {"message": f"Artist {album.title} deleted successfully!"}
-    
-    return {"error": "album not found"}, 404 # Handle where album is not found
+    """Delete an album by its ID."""
+    try:
+        stmt = select(Album).filter_by(id=album_id)
+        album = db.session.scalar(stmt)
+        
+        if album:
+            db.session.delete(album)
+            db.session.commit()
+            return {"message": f"Album {album.title} deleted successfully!"}, 200
+        
+        return {"error": "Album not found"}, 404
+    except Exception as e:
+        logging.error(f"Error in delete_album: {str(e)}")
+        return jsonify({"error": "Failed to delete album."}), 500
