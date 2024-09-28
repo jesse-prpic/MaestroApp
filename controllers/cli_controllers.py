@@ -6,6 +6,7 @@ from models.playlist import Playlist
 from models.song import Song
 from models.album import Album
 from models.genre import Genre
+from sqlalchemy import text
 
 # Blueprint for database CLI commands
 db_commands = Blueprint("db", __name__)
@@ -18,8 +19,12 @@ def create_tables():
 
 @db_commands.cli.command("drop")
 def drop_tables():
-    """Drop all database tables."""
-    db.drop_all()
+    """Drop all database tables in the correct order."""
+    db.session.execute(text('DROP TABLE IF EXISTS playlist_songs CASCADE;'))
+    db.session.execute(text('DROP TABLE IF EXISTS songs CASCADE;'))
+    db.session.execute(text('DROP TABLE IF EXISTS playlists CASCADE;'))
+    # Add similar statements for other tables as necessary
+    db.session.commit()
     print("Tables dropped!")
 
 @db_commands.cli.command("seed")
@@ -46,6 +51,10 @@ def seed_db():
     # Create sample playlists
     playlist1 = Playlist(name="Playlist 1")
     playlist2 = Playlist(name="Playlist 2")
+
+    # Create sample song
+    Song1 = Song(title="HOT TO GO")
+    Song2 = Song(title="This Is What Dreams Are Made Of")
     
     # Add all data to the session
     db.session.add_all([user1, user2, artist1, artist2, genre1, genre2, album1, album2, playlist1, playlist2])

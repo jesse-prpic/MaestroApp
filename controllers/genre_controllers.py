@@ -18,6 +18,11 @@ def create_genre():
         if not body_data or not body_data.get("name"):
             return {"error": "Name is required"}, 400
 
+        # Check if the genre already exists
+        existing_genre = Genre.query.filter_by(name=body_data["name"]).first()
+        if existing_genre:
+            return {"error": "Genre already exists"}, 400
+
         genre = Genre(name=body_data["name"])
         db.session.add(genre)
         db.session.commit()

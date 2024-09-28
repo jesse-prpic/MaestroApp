@@ -12,13 +12,12 @@ from init import db, ma, bcrypt, jwt
 
 # Create a flask app
 def create_app():
-    
     """Create and configure the Flask app.
 
     Returns:
         Flask: Configured app instance.
     """
-
+    
     app = Flask(__name__)
     app.json.sort_keys = False
 

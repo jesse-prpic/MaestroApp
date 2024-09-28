@@ -8,4 +8,4 @@ class PlaylistSong(db.Model):
     song_id = db.Column(db.Integer, db.ForeignKey('songs.id'), primary_key=True)
 
     playlist = db.relationship('Playlist', back_populates='songs') 
-    song = db.relationship('Song', back_populates='playlists')  
+    song = db.relationship('Song', back_populates='playlists')
