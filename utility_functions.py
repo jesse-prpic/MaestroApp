@@ -4,19 +4,22 @@ from init import db
 from models.user import User
 
 def auth_as_admin(fn):
+    """Decorator to require admin access.
+
+    Args:
+        fn (function): Function to decorate.
+
+    Returns:
+        function: Wrapped function with admin check.
+    """
     @functools.wraps(fn)
     def wrapper(*args, **kwargs):
-        # Get the user's ID from JWT identity
-        user_id = get_jwt_identity()
+        user_id = get_jwt_identity()  # Get user ID from JWT
+        user = db.session.scalar(db.select(User).filter_by(id=user_id))  # Fetch user
         
-        # Fetch the user from the database
-        stmt = db.select(User).filter_by(id=user_id)
-        user = db.session.scalar(stmt)
-        
-        # Check if the user is an admin
-        if user and user.is_admin:  # Ensure user exists and is admin
+        # Check admin status
+        if user and user.is_admin:
             return fn(*args, **kwargs)
-        else:
-            return {"error": "Only admin can perform this action"}, 403
+        return {"error": "Only admin can perform this action"}, 403
     
     return wrapper

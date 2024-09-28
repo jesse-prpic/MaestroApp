@@ -11,15 +11,16 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import logging
 from utility_functions import auth_as_admin
 
-# Setting up logging
+# Setup logging
 logging.basicConfig(level=logging.DEBUG)
 
+# Blueprint for authentication routes
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 @auth_bp.route("/register", methods=["POST"])
 def register_user():
     """Register a new user."""
-    logging.debug("register user request received")
+    logging.debug("Register user request received")
     try:
         body_data = request.get_json()
         if not body_data or not body_data.get("name") or not body_data.get("email") or not body_data.get("password"):
@@ -45,7 +46,7 @@ def register_user():
 @auth_as_admin
 @jwt_required()
 def get_users():
-    """Get all users."""
+    """Get all users (admin only)."""
     try:
         users = User.query.all()
         return UserSchema(many=True).dump(users), 200

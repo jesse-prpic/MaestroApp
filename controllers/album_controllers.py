@@ -7,6 +7,7 @@ from sqlalchemy import select
 from utility_functions import auth_as_admin
 import logging
 
+# Blueprint for album-related routes
 albums_bp = Blueprint("albums", __name__, url_prefix="/albums")
 
 @albums_bp.route("/", methods=["POST"])

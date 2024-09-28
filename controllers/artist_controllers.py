@@ -7,6 +7,7 @@ from sqlalchemy import select
 from utility_functions import auth_as_admin
 import logging
 
+# Blueprint for artist-related routes
 artists_bp = Blueprint("artists", __name__, url_prefix="/artists")
 
 @artists_bp.route("/", methods=["POST"])

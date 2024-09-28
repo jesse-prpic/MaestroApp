@@ -7,17 +7,17 @@ from sqlalchemy import select
 from utility_functions import auth_as_admin
 import logging
 
+# Blueprint for genre-related routes
 genres_bp = Blueprint("genres", __name__, url_prefix="/genres")
 
 @genres_bp.route("/", methods=["POST"])
-@jwt_required()
 def create_genre():
     """Create a new genre."""
     try:
         body_data = request.get_json()
         if not body_data or not body_data.get("name"):
             return {"error": "Name is required"}, 400
-        
+
         genre = Genre(name=body_data["name"])
         db.session.add(genre)
         db.session.commit()
@@ -54,12 +54,12 @@ def delete_genre(genre_id):
     try:
         stmt = select(Genre).filter_by(id=genre_id)
         genre = db.session.scalar(stmt)
-        
+
         if genre:
             db.session.delete(genre)
             db.session.commit()
             return {"message": f"Genre {genre.name} deleted successfully!"}, 200
-        
+
         return {"error": "Genre not found"}, 404
     except Exception as e:
         logging.error(f"Error in delete_genre: {str(e)}")
