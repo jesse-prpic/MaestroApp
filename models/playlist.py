@@ -1,6 +1,8 @@
 from init import db
 
 class Playlist(db.Model):
+    """Model representing a Playlist."""
+
     __tablename__ = "playlists"
 
     id = db.Column(db.Integer, primary_key=True)

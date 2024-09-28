@@ -2,8 +2,13 @@ from init import ma
 from marshmallow import fields
 
 class GenreSchema(ma.Schema):
-    songs = fields.List(fields.Nested('SongSchema', only=["id", "title"])) # Nested list of songs
+    """Schema for serializing Genre data."""
+    
+    # Nested list of songs, serializing only the 'id' and 'title' fields from SongSchema
+    songs = fields.List(fields.Nested('SongSchema', only=["id", "title"]))
 
     class Meta:
-        fields = ("id", "name", "songs") # Fields to serialize
-        ordered = True # Order to be maintained
+        # Fields to include in the serialized output
+        fields = ("id", "name", "songs")
+        # Maintain the order of fields as defined
+        ordered = True
