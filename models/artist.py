@@ -2,7 +2,6 @@ from init import db
 
 
 class Artist(db.Model):
-    """Model representing on Artist"""
     __tablename__ = "artists"
 
     id = db.Column(db.Integer, primary_key=True) #Primary Key

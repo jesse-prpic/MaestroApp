@@ -1,7 +1,6 @@
 from init import db
 
 class Song(db.Model):
-    """Model representing a Song."""
     __tablename__ = "songs"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -13,4 +12,4 @@ class Song(db.Model):
     artist = db.relationship('Artist', back_populates='songs')
     genre = db.relationship('Genre', back_populates='songs')
     album = db.relationship('Album', back_populates='songs')
-    playlists = db.relationship('PlaylistSong', back_populates='song')  # Ensure it's a string reference
+    playlists = db.relationship('PlaylistSong', back_populates='song')  # Reference PlaylistSong directly
