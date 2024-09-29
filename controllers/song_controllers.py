@@ -5,7 +5,7 @@ from models.genre import Genre
 from flask_jwt_extended import jwt_required
 from schemas.song_schema import SongSchema
 from sqlalchemy import select
-from schemas.song_schema import SongSchema
+import logging
 
 songs_bp = Blueprint("songs", __name__, url_prefix="/songs")
 
@@ -14,10 +14,8 @@ def create_song():
     """Create a new song."""
     body_data = request.get_json()
 
-    # get genre_id from the request
+    # Get genre_id from the request
     genre_id = body_data.get("genre_id")
-
-    genre_id = body_data.get("genre_id")  # Extract genre_id from the request
     genre = Genre.query.get(genre_id)  # Use the model name to avoid conflicts
 
     if genre is None:
@@ -26,12 +24,18 @@ def create_song():
     song = Song(
         title=body_data.get("title"),
         artist_id=body_data.get("artist_id"),
-        genre_id=body_data.get("genre_id"),
+        genre_id=genre_id,
         album_id=body_data.get("album_id"),
     )
-    db.session.add(song)
-    db.session.commit()
-    return {"message": "Song added successfully", "song": SongSchema().dump(song)}, 201
+    
+    try:
+        db.session.add(song)
+        db.session.commit()
+        return {"message": "Song added successfully", "song": SongSchema().dump(song)}, 201
+    except Exception as e:
+        logging.error(f"Error creating song: {e}")
+        db.session.rollback()
+        return {"error": "Failed to create song"}, 400
 
 @songs_bp.route("/", methods=["GET"])
 def get_all_songs():
@@ -41,14 +45,40 @@ def get_all_songs():
 
 @songs_bp.route("/<int:song_id>", methods=["DELETE"])
 @jwt_required()
-# Delete a playlist by its ID
 def delete_song(song_id):
+    """Delete a song by its ID."""
     stmt = select(Song).filter_by(id=song_id)
     song = db.session.scalar(stmt)
     
     if song:
-        db.session.delete(song) # Delete the playlist from the session
-        db.session.commit() #Commit to the database
-        return {"message": f"Song {song.title} deleted successfully!"}
+        try:
+            db.session.delete(song)
+            db.session.commit()
+            return {"message": f"Song {song.title} deleted successfully!"}
+        except Exception as e:
+            logging.error(f"Error deleting song: {e}")
+            db.session.rollback()
+            return {"error": "Failed to delete song"}, 400
     
-    return {"error": "Song not found"}, 404 # Handle where playlist is not found
+    return {"error": "Song not found"}, 404
+
+@songs_bp.route("/<int:song_id>", methods=["PATCH"])
+@jwt_required()
+def update_song(song_id):
+    body_data = request.get_json()
+    song = Song.query.get(song_id)
+
+    if song:
+        try:
+            song.title = body_data.get("title", song.title)
+            song.genre_id = body_data.get("genre_id", song.genre_id)
+            song.artist_id = body_data.get("artist_id", song.artist_id)
+            song.album_id = body_data.get("album_id", song.album_id)
+            db.session.commit()
+            return SongSchema().dump(song)
+        except Exception as e:
+            logging.error(f"Error updating song: {e}")
+            db.session.rollback()
+            return {"error": "Failed to update song"}, 400
+
+    return {"error": "Song not found"}, 404

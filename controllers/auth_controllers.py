@@ -10,78 +10,102 @@ from models.user import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import logging
 
-# setting up and configure logging for debugging purposes
+# Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
-# creating a Blueprint for authentication-related routes
+# Create a Blueprint for authentication routes
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 @auth_bp.route("/register", methods=["POST"])
 def register_user():
-    logging.debug("register user request received")
+    """Register a new user."""
+    logging.debug("Register user request received")
     try:
-        body_data = request.get_json() # get JSON request Data
+        body_data = request.get_json()
+        if not body_data:
+            return {"error": "Request must be JSON"}, 400
+
         user = User(
             name=body_data.get("name"),
             email=body_data.get("email"),
         )
-        if not body_data:
-            return {"error": "Request must be JSON"}, 400
 
         password = body_data.get("password")
         if password:
-            # Hash the password before storing
             user.password = bcrypt.generate_password_hash(password).decode("utf-8")
 
-        db.session.add(user) # Add user to the session
-        db.session.commit() # Commit the session
-        return {f"message": "User registered successfully", "user": UserSchema().dump(user)}, 201
+        db.session.add(user)
+        db.session.commit()
+        return {"message": "User registered successfully", "user": UserSchema().dump(user)}, 201
+
     except IntegrityError as err:
-        # Handle database integrity errors
         if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
             return {"error": f"The column {err.orig.diag.column_name} is required"}, 400
-            # Not null violation
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
             return {"error": "Email address must be unique"}, 400
-            # unique violation
+        logging.error(f"IntegrityError: {err}")
+        return {"error": "Failed to register user."}, 500
 
 @auth_bp.route("/users", methods=["GET"])
 @jwt_required()
 def get_users():
-    users = User.query.all()
-    return UserSchema(many=True).dump(users)
+    """Get all users (admin only)."""
+    current_user = get_jwt_identity()
+    # Placeholder for admin check
+    if current_user['role'] != 'admin':
+        return {"error": "Unauthorized access."}, 403
 
-@auth_bp.route("/users/<int:user_id>", methods=["DELETE"])
-@jwt_required()
-def delete_user(user_id):
-    # Delete a use account (admin only)
-    current_user = User.query.get(get_jwt_identity())
-    """Delete a user account (admin only)."""
-    user = User.query.get_or_404(user_id)
-    db.session.delete(user)
-    db.session.commit()
-    return {"message": "User deleted successfully"}, 204
-
-@auth_bp.route("/logout", methods=["POST"])
-@jwt_required()
-def logout_user():
-    """Logout the user by invalidating the token."""
-    # Implementation depends on how you manage token revocation
-    return {"message": "User logged out successfully"}, 200
+    try:
+        users = User.query.all()
+        return UserSchema(many=True).dump(users), 200
+    except Exception as e:
+        logging.error(f"Error fetching users: {e}")
+        return {"error": "Failed to fetch users."}, 500
 
 @auth_bp.route("/login", methods=["POST"])
 def login_user():
-    # Login a user and return a JWT
+    """Authenticate a user and return a JWT."""
     body_data = request.get_json()
-    stmt = db.select(User).filter_by(email=body_data.get("email"))
-    user = db.session.scalar(stmt) # Fetch user by email
-    
-    # Validate user credentials
-    if user and bcrypt.check_password_hash(user.password, body_data.get("password")):
-        # Create JWT token for the user
-        token = create_access_token(identity=int(user.id), expires_delta=timedelta(days=7))
-        return {"email": user.email, "token": token}
-    
-    else:
-        # Invalid response due to credentials
-        return {"error": "Invalid email or password"}, 400
+
+    if not body_data or 'email' not in body_data or 'password' not in body_data:
+        return {"error": "Email and password are required."}, 400
+
+    try:
+        user = User.query.filter_by(email=body_data["email"]).first()
+        if user and bcrypt.check_password_hash(user.password, body_data["password"]):
+            expires = timedelta(days=1)
+            access_token = create_access_token(identity={"email": user.email}, expires_delta=expires)
+            return {"access_token": access_token}, 200
+
+        return {"error": "Invalid email or password."}, 401
+    except Exception as e:
+        logging.error(f"Error during login: {e}")
+        return {"error": "An error occurred during login."}, 500
+
+@auth_bp.route("/", methods=["PATCH"])
+@jwt_required()
+def update_user():
+    """Update the user details."""
+    body_data = request.get_json()
+    current_user_email = get_jwt_identity()["email"]
+
+    try:
+        user = User.query.filter_by(email=current_user_email).first()
+
+        if not user:
+            return {"error": "User not found."}, 404
+
+        if 'name' in body_data:
+            user.name = body_data["name"]
+        if 'email' in body_data:
+            user.email = body_data["email"]
+        if 'password' in body_data:
+            user.password = bcrypt.generate_password_hash(body_data["password"]).decode("utf-8")
+
+        db.session.commit()
+        return UserSchema().dump(user), 200
+
+    except Exception as e:
+        logging.error(f"Error updating user profile: {e}")
+        db.session.rollback()
+        return {"error": "Failed to update user profile."}, 500

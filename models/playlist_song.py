@@ -1,9 +1,10 @@
 from init import db
 
 class PlaylistSong(db.Model):
+    """Model for Playlist-Song association."""
     __tablename__ = "playlist_songs"
 
-    playlist_id = db.Column(db.Integer, db.ForeignKey('playlists.id'), primary_key=True)
+    playlist_id = db.Column(db.Integer, db.ForeignKey('playlists.id'), primary_key=True) 
     song_id = db.Column(db.Integer, db.ForeignKey('songs.id'), primary_key=True)
 
     playlist = db.relationship('Playlist', back_populates='songs') 
