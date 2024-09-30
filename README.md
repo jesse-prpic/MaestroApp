@@ -34,9 +34,6 @@ Thorough Usage:
 Sub-tasks: Each main task is broken down into smaller, actionable sub-tasks. For example, the task "Implement Playlist Management" might include sub-tasks like "Create Playlist Model," "Develop Playlist API," and "Integrate Playlist with User Schema."
 Labels and Priorities: Tasks are tagged with labels (e.g., “bug,” “feature,” “enhancement”) and prioritized by urgency and importance, allowing the team to focus on critical areas, such as fixing authentication issues or adding new music features.
 
-Long-Term Tracking:
-Progress Metrics: The project board is updated regularly, with metrics (like burndown charts) generated to visualize task completion over time, providing insights into project health and ensuring milestones are met.
-
 
 ## R3
 
