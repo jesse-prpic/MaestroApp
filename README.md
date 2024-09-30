@@ -24,76 +24,68 @@ Interconnected Data Relationships: The relationships defined in the models allow
 Secure Authentication: Implementing JWT-based authentication ensures that users’ data and actions are protected, providing peace of mind regarding privacy and security.
 
 ## R2
-Task Planning and Tracking: Tasks in this project are managed through a combination of Agile methodologies and tools like Trello or Jira, allowing for iterative development and clear visibility of progress.
+In this project, tasks are managed using Agile methodologies with tools like Trello or Jira, ensuring iterative development and clear visibility into progress.
 
 Basic Usage:
-Task Creation: Initial tasks are created in Trello, categorized into different lists (e.g., "To Do," "In Progress," "Completed").
-Assignment: Team members are assigned specific tasks based on their expertise and availability.
+Task Creation: Initial tasks are created in Trello, organized into lists such as "To Do," "In Progress," and "Completed" to reflect the workflow of developing features like user authentication and album management.
+Assignment: Team members are assigned tasks based on their expertise (e.g., backend development for models like User, Song, and Playlist) and availability.
 
 Thorough Usage:
-Sub-tasks: Each main task is broken down into smaller, actionable sub-tasks, allowing for detailed tracking and clearer milestones.
-Labels and Priorities: Tasks are tagged with labels (e.g., “bug,” “feature,” “enhancement”) and prioritized based on urgency and importance.
-
-Comments and Discussions: Team members can comment on tasks to discuss progress, challenges, or updates, fostering collaboration.
-Sprint Planning: Weekly sprints are planned where tasks are reviewed and adjusted based on team feedback and priorities.
+Sub-tasks: Each main task is broken down into smaller, actionable sub-tasks. For example, the task "Implement Playlist Management" might include sub-tasks like "Create Playlist Model," "Develop Playlist API," and "Integrate Playlist with User Schema."
+Labels and Priorities: Tasks are tagged with labels (e.g., “bug,” “feature,” “enhancement”) and prioritized by urgency and importance, allowing the team to focus on critical areas, such as fixing authentication issues or adding new music features.
 
 Long-Term Tracking:
-Progress Metrics: The project board is updated regularly, and progress metrics (like burndown charts) are generated to visualize task completion over time.
+Progress Metrics: The project board is updated regularly, with metrics (like burndown charts) generated to visualize task completion over time, providing insights into project health and ensuring milestones are met.
 
 
 ## R3
 
-Throughout the project there has been multiple third_party services, packages and descrepencies that work to build the framework to hashing passwords.
+This project utilizes several third-party services, packages, and frameworks to build a robust music application, particularly focusing on secure password handling and data management.
 
 Third-Party Services and Packages:
+Flask: A lightweight web framework that provides the foundation for the application, enabling rapid development of features such as user authentication and playlist management.
 
-Flask: A lightweight web framework for Python that provides the foundation for the application. It allows for rapid development and flexibility.
+Flask-SQLAlchemy: This package simplifies database interactions by allowing the definition of models (e.g., Album, Artist, Genre, Song) as Python classes, which promotes cleaner and more maintainable code.
 
-Flask-SQLAlchemy: This package provides a powerful ORM layer that simplifies database interactions. It allows developers to work with Python classes instead of writing raw SQL, promoting cleaner and more maintainable code.
+Flask-Marshmallow: This library integrates with Flask to facilitate the serialization and deserialization of complex data types, such as converting Song and Playlist objects to JSON format for API responses.
 
-Flask-Marshmallow: This library integrates Marshmallow with Flask to facilitate serialization and deserialization of complex data types. It streamlines the process of converting Python objects to JSON format and vice versa.
+Flask-Bcrypt: Utilized for securely hashing passwords during user registration and login processes, ensuring that user credentials remain protected.
 
-Flask-Bcrypt: Utilized for hashing passwords securely. By using Bcrypt, the application protects user credentials, making it difficult for malicious actors to reverse-engineer passwords.
+Flask-JWT-Extended: This extension supports JSON Web Tokens (JWT) for secure user authentication across API endpoints, allowing features like role-based access control for admin users.
 
-Flask-JWT-Extended: This extension provides support for JSON Web Tokens (JWT), allowing for secure user authentication and authorization across API endpoints.
+PostgreSQL: The application uses PostgreSQL, a robust relational database system that efficiently handles the application's data structure, including relationships between users, songs, and playlists.
 
 Database System: The application employs PostgreSQL, a robust, open-source relational database system.
 PostgreSQL: Database management systems that store the application's data. PostgreSQL is often favored for its robustness and scalability, while SQLite is excellent for development and small-scale applications.
 
 ## R4
-Explain the benefits and drawbacks of this app’s underlying database system.
 
 Benefits:
+Data Integrity and Reliability: PostgreSQL’s ACID compliance ensures that transactions involving user data and playlists are processed reliably, which is crucial for application security.
 
-Data Integrity and Reliability: PostgreSQL’s ACID compliance ensures that transactions are processed reliably, which is crucial for applications dealing with financial data or critical user information.
+Rich Feature Set: The database supports advanced functionalities such as full-text search, enabling efficient querying of songs and albums by title or artist.
 
-Rich Feature Set: It offers advanced functionalities like full-text search, geospatial queries (with PostGIS), and custom indexing methods, making it suitable for complex applications.
+Strong Community Support: PostgreSQL boasts a vast community that provides extensive documentation and troubleshooting resources, aiding in development and maintenance.
 
-Strong Community Support: The PostgreSQL community is vast, offering extensive documentation, forums, and third-party tools for enhanced functionality and troubleshooting.
-
-Scalability: PostgreSQL scales well with increasing data volumes and concurrent users, making it suitable for applications that expect growth.
+Scalability: PostgreSQL is well-suited for scaling with increasing data volumes and user activity, which is vital as the application grows in features and user base.
 
 Drawbacks:
+Steeper Learning Curve: New developers may find PostgreSQL more complex than simpler databases, potentially slowing down the onboarding process.
 
-Steeper Learning Curve: New users may find PostgreSQL more challenging to learn compared to simpler databases, which can slow down initial development.
-
-Maintenance Overhead: Running PostgreSQL may require more regular maintenance and tuning compared to simpler database solutions, increasing operational complexity.
-
-Performance Overhead: For very small-scale applications, the performance overhead from advanced features may not be justified, making lighter alternatives like SQLite more appealing.
+Performance Overhead: For very small-scale applications, the advanced features of PostgreSQL might introduce unnecessary overhead, making simpler databases like SQLite more appealing for development stages.
 
 
 ## R5
 Explain the features, purpose and functionalities of the object-relational mapping system (ORM) used in this app.
 
 Features of SQLAlchemy:
+Model Definition: SQLAlchemy allows database tables to be defined as Python classes. For example, models like User, Album, and Song are created as classes, where attributes correspond to database columns, simplifying interactions.
 
-Model Definition: SQLAlchemy allows you to define database tables as Python classes, where each attribute corresponds to a database column. This abstraction simplifies database interactions.
+Automatic Relationship Management: SQLAlchemy manages relationships automatically, allowing easy access to related data (e.g., a Song can access its Artist and Album) without complex SQL joins.
 
-Automatic Relationship Management: SQLAlchemy simplifies handling relationships. For example, a song can automatically access its artist and album without writing complex SQL joins.
+Query Composition: It enables building queries using Python expressions rather than SQL syntax, leading to more readable and maintainable code, especially when querying multiple tables like Playlist and Song.
 
-Query Composition: It allows for building queries using Python expressions rather than SQL syntax, which leads to more readable and maintainable code.
-
-Migration Support: SQLAlchemy integrates well with migration tools like Alembic, allowing developers to version control their database schema and apply changes smoothly.
+Migration Support: SQLAlchemy integrates with migration tools like Alembic, allowing developers to version control the database schema. This is crucial for managing changes in models as new features are added, such as new genres or song attributes.
 
 ## R6
 Design an entity relationship diagram (ERD) for this app’s database, and explain how the relations between the diagrammed models will aid the database design. 
@@ -106,17 +98,29 @@ Song: Represents individual songs. Attributes may include id, title, artist_id, 
 Artist: Represents musical artists. Attributes may include id and name.
 Album: Represents music albums. Attributes may include id, title, and relationships to songs.
 Genre: Represents music genres. Attributes may include id and name.
+PlaylistSongL: Represents another table where both Playlist and Song is referenced.
+
 Relationships:
-
 User to Playlist: One user can have many playlists (1-to-N).
-Playlist to Song: Many-to-many relationship via a join table (PlaylistSong).
-Artist to Song: An artist can have multiple songs (1-to-N).
-Album to Song: An album can contain multiple songs (1-to-N).
-Genre to Song: A genre can be associated with multiple songs (1-to-N).
-Benefits of ERD:
 
+Playlist to Song: Many-to-many relationship via a join table (PlaylistSong).
+- This creates a junction table that is named (PlaylistSong)
+
+Artist to Song: An artist can have multiple songs (1-to-N).
+
+Album to Song: An album can contain multiple songs (1-to-N).
+
+Genre to Song: A genre can be associated with multiple songs (1-to-N).
+
+This is what it would look like visually
+
+![alt text](ERD.png)
+
+Benefits of ERD:
 Visualization: Provides a clear visualization of how data entities interact, aiding in understanding the application structure.
+
 Database Normalization: Helps identify potential redundancies and design a normalized database schema.
+
 Facilitates Development: Guides developers during implementation by providing a reference for relationships and constraints.
 
 ## R7
@@ -138,7 +142,9 @@ Playlist: Connects users to their song collections, allowing for flexible playli
 How Relationships Aid Implementation:
 
 Efficiency: Relationships enable efficient data retrieval. For example, fetching all songs from a particular artist becomes straightforward due to the established foreign key relationships.
+
 Data Integrity: Relationships enforce referential integrity. If an artist is deleted, any associated songs can be automatically managed (e.g., set to NULL or deleted).
+
 Complex Queries: Relationships facilitate complex queries involving joins, enabling the app to deliver rich data interactions, like retrieving all playlists containing a specific song.
 
 ## R8
